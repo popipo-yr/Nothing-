@@ -17,9 +17,9 @@
     NSMutableDictionary *addParameters = [NSMutableDictionary dictionary];
 
    
-    [addParameters setValue: kApiVersion      forKey:@"version"];
-    [addParameters setValue: kPdaType         forKey:@"pdatype"];
-    [addParameters setValue: [RRUtils getUID] forKey:@"udid"];
+//    [addParameters setValue: kApiVersion      forKey:@"version"];
+//    [addParameters setValue: kPdaType         forKey:@"pdatype"];
+//    [addParameters setValue: [RRUtils getUID] forKey:@"udid"];
    
     return addParameters;
     
@@ -29,38 +29,38 @@
 
      NSMutableDictionary *newParameters = [NSMutableDictionary dictionaryWithDictionary:oldParamer];
     //经纬度
-    NSString *lon = [NSString formatValue:oldParamer[@"lon"]];
-    NSString *lat = [NSString formatValue:oldParamer[@"lat"]];
-    if ([RRLocationFounction isUserLocationAvailable]) {
-
-        if ([lon length]==0||[lat length]==0) {
-            CLLocation *location = [[RRSession session] objectForKey:kCurrentLocation];
-            CLLocationCoordinate2D cor = [RRCoordCover convertGCJ02ToBD:location.coordinate];
-            if (location) {
-                [newParameters setValue: [NSString stringWithFormat:@"%f", cor.longitude] forKey:@"lon"];
-                [newParameters setValue: [NSString stringWithFormat:@"%f", cor.latitude] forKey:@"lat"];
-            }
-        }
-    }
-    else {
-
-#if SERVER_MENU == 1
-        [newParameters setValue:lon forKey:@"lon"];
-        [newParameters setValue:lat forKey:@"lat"];
-#else
-        [newParameters setValue:@"" forKey:@"lon"];
-        [newParameters setValue:@"" forKey:@"lat"];
-#endif
-    }
-    
-    
-    NSString *city = oldParamer[@"city"];
-    if (nil == city) {
-        city = [RRConfig currentCity];;
-        if (city.length>0) {
-            [newParameters setValue:city forKey:@"city"];
-        }
-    }
+//    NSString *lon = [NSString formatValue:oldParamer[@"lon"]];
+//    NSString *lat = [NSString formatValue:oldParamer[@"lat"]];
+//    if ([RRLocationFounction isUserLocationAvailable]) {
+//
+//        if ([lon length]==0||[lat length]==0) {
+//            CLLocation *location = [[RRSession session] objectForKey:kCurrentLocation];
+//            CLLocationCoordinate2D cor = [RRCoordCover convertGCJ02ToBD:location.coordinate];
+//            if (location) {
+//                [newParameters setValue: [NSString stringWithFormat:@"%f", cor.longitude] forKey:@"lon"];
+//                [newParameters setValue: [NSString stringWithFormat:@"%f", cor.latitude] forKey:@"lat"];
+//            }
+//        }
+//    }
+//    else {
+//
+//#if SERVER_MENU == 1
+//        [newParameters setValue:lon forKey:@"lon"];
+//        [newParameters setValue:lat forKey:@"lat"];
+//#else
+//        [newParameters setValue:@"" forKey:@"lon"];
+//        [newParameters setValue:@"" forKey:@"lat"];
+//#endif
+//    }
+//    
+//    
+//    NSString *city = oldParamer[@"city"];
+//    if (nil == city) {
+//        city = [RRConfig currentCity];;
+//        if (city.length>0) {
+//            [newParameters setValue:city forKey:@"city"];
+//        }
+//    }
 
     
     return newParameters;

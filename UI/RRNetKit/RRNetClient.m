@@ -80,17 +80,13 @@
                     failureBlock:(void (^)(NSDictionary *res))failureBlock
                     netFailBlock:(void (^)(NSError *error))netFailBlock
 {
-    PYNetStartRequestWithRequestInfo *startInfo = nil;
+    PYNetStartRequestWithRequestInfo *startInfo = [self _createReqInfoWithPath:path
+                                                                    parameters:parameters
+                                                                  successBlock:successBlock
+                                                                  failureBlock:failureBlock];
+    startInfo.isMultipartBody = YES;
 
-    startInfo = [self _oprBeforeAllStartWithPath:path
-                                      parameters:parameters
-                                    successBlock:successBlock
-                                    failureBlock:failureBlock];
-
-    if (startInfo.needStop) return nil;
-
-    [self _oprBeforeMultipartFormRequestCreateWithInfo:startInfo];
-
+    [self _oprBeforeAllStartWithInfo:startInfo];
     if (startInfo.needStop) return nil;
 
     void (^constructingBodyWithBlock)(id <AFMultipartFormData>) = ^(id <AFMultipartFormData> formData) {
@@ -108,7 +104,9 @@
                                                                      constructingBodyWithBlock:constructingBodyWithBlock
                                                                                          error:nil];
 
-    [self _appendHears:startInfo.header aboutRequest:req];
+    [self _oprAfterRequestCreate:req withInfo:startInfo];
+    if (startInfo.needStop) return nil;
+
     return [self _startJsonRequest:req successBlock:successBlock failureBlock:failureBlock netFailBlock:netFailBlock];
 }
 
@@ -119,13 +117,12 @@
                 failureBlock:(void (^)(NSDictionary *res))failureBlock
                 netFailBlock:(void (^)(NSError *error))netFailBlock
 {
-    PYNetStartRequestWithRequestInfo *startInfo = nil;
+    PYNetStartRequestWithRequestInfo *startInfo = [self _createReqInfoWithPath:path
+                                                                    parameters:parameters
+                                                                  successBlock:successBlock
+                                                                  failureBlock:failureBlock];
 
-    startInfo = [self _oprBeforeAllStartWithPath:path
-                                      parameters:parameters
-                                    successBlock:successBlock
-                                    failureBlock:failureBlock];
-
+    [self _oprBeforeAllStartWithInfo:startInfo];
     if (startInfo.needStop) return nil;
 
     NSMutableURLRequest *request = [[_realClient requestSerializer] requestWithMethod:@"POST"
@@ -133,8 +130,7 @@
                                                                            parameters:parameters
                                                                                 error:nil];
 
-    [self _oprAfterSinglepartFormRequesCreate:request withInfo:startInfo];
-
+    [self _oprAfterRequestCreate:request withInfo:startInfo];
     if (startInfo.needStop) return nil;
 
     return [self _startJsonRequest:request successBlock:successBlock failureBlock:failureBlock netFailBlock:netFailBlock];
@@ -147,13 +143,12 @@
                                    success:(void (^)(id responseObject))success
                                    failure:(void (^)(NSError *error))failure
 {
-    PYNetStartRequestWithRequestInfo *startInfo = nil;
+    PYNetStartRequestWithRequestInfo *startInfo = [self _createReqInfoWithPath:path
+                                                                    parameters:parameters
+                                                                  successBlock:success
+                                                                  failureBlock:nil];
 
-    startInfo = [self _oprBeforeAllStartWithPath:path
-                                      parameters:parameters
-                                    successBlock:success
-                                    failureBlock:nil];
-
+    [self _oprBeforeAllStartWithInfo:startInfo];
     if (startInfo.needStop) return nil;
 
     NSMutableURLRequest *request = [[_realClient requestSerializer] requestWithMethod:@"GET"
@@ -161,8 +156,7 @@
                                                                            parameters:parameters
                                                                                 error:nil];
 
-    [self _oprAfterSinglepartFormRequesCreate:request withInfo:startInfo];
-
+    [self _oprAfterRequestCreate:request withInfo:startInfo];
     if (startInfo.needStop) return nil;
 
     return [self _createAndStartTaskWithRequest:request
@@ -235,49 +229,42 @@
 }
 
 
+- (PYNetStartRequestWithRequestInfo *)_createReqInfoWithPath:(NSString *)path
+                                                  parameters:(NSDictionary *)parameters
+                                                successBlock:(void (^)(NSDictionary *res))successBlock
+                                                failureBlock:(void (^)(NSDictionary *res))failureBlock
+{
+    PYNetStartRequestWithRequestInfo *reqInfo = [PYNetStartRequestWithRequestInfo new];
+    reqInfo.successBlock = successBlock;
+    reqInfo.failureBlock = failureBlock;
+    reqInfo.param        = parameters;
+    reqInfo.path         = path;
+
+    return reqInfo;
+}
+
+
 ///进行需要的处理在一切开始,并创建RequestInfo
-- (PYNetStartRequestWithRequestInfo *)_oprBeforeAllStartWithPath:(NSString *)path
-                                                      parameters:(NSDictionary *)parameters
-                                                    successBlock:(void (^)(NSDictionary *res))successBlock
-                                                    failureBlock:(void (^)(NSDictionary *res))failureBlock
-{
-    PYNetStartRequestWithRequestInfo *startInfo = [PYNetStartRequestWithRequestInfo new];
-    startInfo.successBlock = successBlock;
-    startInfo.failureBlock = failureBlock;
-    startInfo.param        = parameters;
-    startInfo.path         = path;
-
-    for (id<PYNetStartRequestPro> opr in _inOprs) {
-        if ([opr respondsToSelector:@selector(oprBeforeAllStartWithInfo:)]) {
-            [opr oprBeforeAllStartWithInfo:startInfo];
-        }
-    }
-
-    return startInfo;
-}
-
-
-///进行需要的处理在多部件request创建前
-- (void)_oprBeforeMultipartFormRequestCreateWithInfo:(PYNetStartRequestWithRequestInfo *)info
+- (void)_oprBeforeAllStartWithInfo:(PYNetStartRequestWithRequestInfo *)info
 {
     for (id<PYNetStartRequestPro> opr in _inOprs) {
-        if ([opr respondsToSelector:@selector(oprBeforeMultipartFormRequestCreateWithInfo:)]) {
-            [opr oprBeforeMultipartFormRequestCreateWithInfo:info];
+        if ([opr respondsToSelector:@selector(oprBeforeRequestCreateWithInfo:)]) {
+            [opr oprBeforeRequestCreateWithInfo:info];
         }
     }
 }
 
 
-///进行需要的处理在单部件request创建后
-- (void)_oprAfterSinglepartFormRequesCreate:(NSMutableURLRequest *)req
-                                   withInfo:(PYNetStartRequestWithRequestInfo *)info
+///进行需要的处理在request创建后
+- (void)_oprAfterRequestCreate:(NSMutableURLRequest *)req
+                      withInfo:(PYNetStartRequestWithRequestInfo *)info
 {
     info.request = req;
     info.header  = req.allHTTPHeaderFields;
 
     for (id<PYNetStartRequestPro> opr in _inOprs) {
-        if ([opr respondsToSelector:@selector(oprAfterSinglepartFormRequesCreateWithInfo:)]) {
-            [opr oprAfterSinglepartFormRequesCreateWithInfo:info];
+        if ([opr respondsToSelector:@selector(oprAfterRequestCreateWithInfo:)]) {
+            [opr oprAfterRequestCreateWithInfo:info];
         }
     }
 
@@ -298,17 +285,6 @@
     }
 
     return finishInfo;
-}
-
-
-//
-- (void)_appendHears:(NSDictionary *)appendHeader aboutRequest:(NSMutableURLRequest *)req
-{
-    NSMutableDictionary *info = [NSMutableDictionary dictionaryWithDictionary:req.allHTTPHeaderFields];
-
-    [info setValuesForKeysWithDictionary:appendHeader];
-
-    req.allHTTPHeaderFields = info;
 }
 
 

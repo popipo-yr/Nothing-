@@ -18,14 +18,10 @@
 @protocol  PYNetStartRequestPro  <NSObject>
 
 ///所有开始前的处理
-- (void)oprBeforeAllStartWithInfo:(PYNetStartRequestInfo *)info;
+- (void)oprBeforeRequestCreateWithInfo:(PYNetStartRequestInfo *)info;
 
-///单部件请求时,在创建request后的处理
-- (void)oprAfterSinglepartFormRequesCreateWithInfo:(PYNetStartRequestWithRequestInfo *)info;
-
-///多部件请求时,在创建request前的处理
-- (void)oprBeforeMultipartFormRequestCreateWithInfo:(PYNetStartRequestInfo *)info;
-
+///在创建request后的处理
+- (void)oprAfterRequestCreateWithInfo:(PYNetStartRequestWithRequestInfo *)info;
 
 @end
 
@@ -36,6 +32,7 @@
  */
 @protocol  PYNetFinishRequestPro  <NSObject>
 
+///请求结束后的处理
 - (void)oprAfterFinishWithInfo:(PYNetFinishRequestInfo *)info;
 
 @end
@@ -56,18 +53,10 @@
 @property (nonatomic, assign) BOOL needStop; //当具体一个操作,修改为true的时候,将停止处理和请求
 @property (nonatomic, assign) BOOL isMultipartBody; //是否为多部件请求体
 
-@end
-
-
-/**
- * 开始网络请求信息, 包含NSURLRequest
- */
-@interface PYNetStartRequestWithRequestInfo : PYNetStartRequestInfo
-
 @property (nonatomic, strong) NSMutableURLRequest *request;
 
-
 @end
+
 
 
 /**
