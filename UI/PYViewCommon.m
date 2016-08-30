@@ -1,15 +1,15 @@
 //
-//  RRUserCenterViewCommon.m
-//  rrkd
+//  PYViewCommon.m
+//  yr
 //
-//  Created by rrkd on 15/9/10.
-//  Copyright (c) 2015年 创物科技. All rights reserved.
+//  Created by yr on 15/9/10.
+//  Copyright (c) 2015年 yr. All rights reserved.
 //
 
-#import "RRUserCenterViewCommon.h"
+#import "PYViewCommon.h"
 
-#pragma mark - RROnlyTextTipView
-@implementation RROnlyTextTipView {
+#pragma mark - PYOnlyTextTipView
+@implementation PYOnlyTextTipView {
     UILabel *_tipLabel;
 }
 
@@ -86,7 +86,7 @@
 @end
 
 #pragma  mark - 文字单元
-@implementation RRFormatTextFieldView {
+@implementation PYFormatTextFieldView {
     UILabelWithWorning *_nameLabel;
     UITextField        *_contentTextField;
     UIButton           *_rightBtn;
@@ -165,7 +165,7 @@
     if (imgName != nil && ![imgName isEqualToString:@""]) {
         _rightBtn.contentHorizontalAlignment = UIControlContentHorizontalAlignmentRight;
         [_rightBtn setImage:[UIImage imageNamed:imgName] forState:UIControlStateNormal];
-        [_rightBtn setImageEdgeInsets:UIEdgeInsetsMake(0, 0, 0, RR_HORIZONTAL_SPACE)];
+        [_rightBtn setImageEdgeInsets:UIEdgeInsetsMake(0, 0, 0, PY_HORIZONTAL_SPACE)];
         _rightBtn.enabled = true;
         _rightBtn.hidden  = false;
     } else {
@@ -218,7 +218,7 @@
 }
 @end
 #pragma  mark - 文字单元只是显示
-@implementation RRFormatLabelView {
+@implementation PYFormatLabelView {
     UILabelWithWorning *_nameLabel;
     UILabel            *_contentLabel;
     UIImageView        *_rightImageView;
@@ -383,9 +383,9 @@
 @end
 
 
-#pragma mark -  RRWorningTextTipView
+#pragma mark -  PYWorningTextTipView
 
-@implementation RRWorningTextTipView {
+@implementation PYWorningTextTipView {
     UIImageView *_noteImgView;
     UILabel     *_noteLabel;
 

@@ -1,9 +1,9 @@
 //
-//  RRUserCenterViewCommon.h
-//  rrkd
+//  PYViewCommon.h
+//  yr
 //
-//  Created by rrkd on 15/9/10.
-//  Copyright (c) 2015年 创物科技. All rights reserved.
+//  Created by yr on 15/9/10.
+//  Copyright (c) 2015年 yr. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
@@ -13,7 +13,7 @@
  *
  *  只有文字提示视图,包含一个label
  */
-@interface RROnlyTextTipView : UIView
+@interface PYOnlyTextTipView : UIView
 @property(nonatomic, readonly) UILabel *tipLabel; //内容label
 - (void)setText:(NSString *)text; //设置显示内容
 - (void)setContentInset:(UIEdgeInsets)insets; //设置label距离视图的间隔
@@ -36,7 +36,7 @@
  *
  *  表单文本输入视图,从左到右包含一个内容项目标签,值输入框,一个按钮
  */
-@interface RRFormatTextFieldView : UIView
+@interface PYFormatTextFieldView : UIView
 @property(nonatomic, readonly) UITextField        *contentTextField; //值输入框
 @property(nonatomic, readonly) UIButton           *rightBtn; //右侧按钮,可用仅作图片展示
 @property(nonatomic, readonly) UILabelWithWorning *nameLabel; //左侧内容项目标签
@@ -76,7 +76,7 @@
  *  表单文本展示视图,从左到右包含一个内容项目标签,值文本标签,一个右侧图片
  */
 /*文字单元只是显示*/
-@interface RRFormatLabelView : UIView
+@interface PYFormatLabelView : UIView
 @property(nonatomic, readonly) UILabel            *contentLabel;  //值文本标签
 @property(nonatomic, readonly) UILabelWithWorning *nameLabel;     //项目标签
 @property(nonatomic, readonly) UIImageView        *rightImageView;
@@ -127,7 +127,7 @@
  *
  *  警告提示文本,从左到右包含一个提示图片视图,提示内容文本框
  */
-@interface RRWorningTextTipView : UIView
+@interface PYWorningTextTipView : UIView
 @property(nonatomic, readonly) UIImageView *noteImgView; //提示图片视图
 @property(nonatomic, readonly) UILabel     *noteLabel;   //提示内容文本框
 /**

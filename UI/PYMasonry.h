@@ -1,19 +1,12 @@
 //
 //  PYMasonry.h
-//  rrkd
+//  yr
 //
-//  Created by rrkd on 15/9/23.
-//  Copyright © 2015年 创物科技. All rights reserved.
+//  Created by yr on 15/9/23.
+//  Copyright © 2015年 yr. All rights reserved.
 //
 
 #import <Masonry/Masonry.h>
-
-@interface MASCompositeConstraint (Addtion)
-
--(NSArray*)childConstraintsOut;
-
-@end
-
 
 /*masonry 简化操作*/
 @interface MasonryUtil : NSObject
